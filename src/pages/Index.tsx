@@ -8,9 +8,44 @@ const Index = () => {
     name: "",
     email: "",
     phone: "",
-    location: "", // Added location field
+    pincode: "",
+    city: "",
     experience: "beginner",
   });
+
+  const handlePincodeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const pincode = e.target.value;
+    setFormData((prev) => ({ ...prev, pincode }));
+
+    if (pincode.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const [data] = await response.json();
+        
+        if (data.Status === "Success") {
+          const cityName = data.PostOffice[0].District;
+          setFormData((prev) => ({ ...prev, city: cityName }));
+          toast({
+            title: "City Found",
+            description: `Location set to ${cityName}`,
+          });
+        } else {
+          setFormData((prev) => ({ ...prev, city: "" }));
+          toast({
+            title: "Invalid Pincode",
+            description: "Please enter a valid pincode",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch city information",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,17 +139,29 @@ const Index = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Location
+                  Pincode
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="City, Country"
+                  maxLength={6}
+                  pattern="[0-9]{6}"
+                  placeholder="Enter 6-digit pincode"
                   className="form-input"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
+                  value={formData.pincode}
+                  onChange={handlePincodeChange}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  City
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  className="form-input bg-gray-50"
+                  value={formData.city}
+                  placeholder="City will be auto-filled"
                 />
               </div>
               <div>
