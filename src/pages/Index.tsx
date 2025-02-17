@@ -12,38 +12,37 @@ const Index = () => {
     city: "",
   });
 
-  const handlePincodeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const pincode = e.target.value;
-    setFormData((prev) => ({ ...prev, pincode }));
+  // Mumbai cities/areas list
+  const mumbaiAreas = [
+    "Andheri", "Bandra", "Borivali", "Colaba", "Dadar",
+    "Dharavi", "Goregaon", "Juhu", "Kandivali", "Kurla",
+    "Malad", "Mulund", "Powai", "Thane", "Worli"
+  ];
 
-    if (pincode.length === 6) {
-      try {
-        const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-        const [data] = await response.json();
-        
-        if (data.Status === "Success") {
-          const cityName = data.PostOffice[0].District;
-          setFormData((prev) => ({ ...prev, city: cityName }));
-          toast({
-            title: "City Found",
-            description: `Location set to ${cityName}`,
-          });
-        } else {
-          setFormData((prev) => ({ ...prev, city: "" }));
-          toast({
-            title: "Invalid Pincode",
-            description: "Please enter a valid pincode",
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch city information",
-          variant: "destructive",
-        });
-      }
+  const [filteredCities, setFilteredCities] = useState<string[]>([]);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+
+  const handleCitySearch = (searchTerm: string) => {
+    setFormData(prev => ({ ...prev, city: searchTerm }));
+    if (searchTerm.length > 0) {
+      const filtered = mumbaiAreas.filter(city => 
+        city.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCities(filtered);
+      setShowCityDropdown(true);
+    } else {
+      setFilteredCities([]);
+      setShowCityDropdown(false);
     }
+  };
+
+  const selectCity = (city: string) => {
+    setFormData(prev => ({ ...prev, city }));
+    setShowCityDropdown(false);
+    toast({
+      title: "City Selected",
+      description: `Selected location: ${city}`,
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -148,20 +147,36 @@ const Index = () => {
                   placeholder="Enter 6-digit pincode"
                   className="form-input"
                   value={formData.pincode}
-                  onChange={handlePincodeChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, pincode: e.target.value })
+                  }
                 />
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   City
                 </label>
                 <input
                   type="text"
-                  readOnly
-                  className="form-input bg-gray-50"
+                  required
+                  className="form-input"
                   value={formData.city}
-                  placeholder="City will be auto-filled"
+                  onChange={(e) => handleCitySearch(e.target.value)}
+                  placeholder="Search for areas in Mumbai"
                 />
+                {showCityDropdown && filteredCities.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {filteredCities.map((city, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => selectCity(city)}
+                      >
+                        {city}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <button type="submit" className="btn-primary w-full">
                 Secure Your Spot Now
