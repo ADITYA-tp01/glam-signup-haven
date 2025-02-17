@@ -10,7 +10,6 @@ const Index = () => {
     phone: "",
     pincode: "",
     city: "",
-    experience: "beginner",
   });
 
   const handlePincodeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,22 +162,6 @@ const Index = () => {
                   value={formData.city}
                   placeholder="City will be auto-filled"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Experience Level
-                </label>
-                <select
-                  className="form-input"
-                  value={formData.experience}
-                  onChange={(e) =>
-                    setFormData({ ...formData, experience: e.target.value })
-                  }
-                >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
               </div>
               <button type="submit" className="btn-primary w-full">
                 Secure Your Spot Now
