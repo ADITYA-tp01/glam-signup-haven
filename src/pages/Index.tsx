@@ -8,6 +8,7 @@ const Index = () => {
     name: "",
     email: "",
     phone: "",
+    location: "", // Added location field
     experience: "beginner",
   });
 
@@ -98,6 +99,21 @@ const Index = () => {
                   value={formData.phone}
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="City, Country"
+                  className="form-input"
+                  value={formData.location}
+                  onChange={(e) =>
+                    setFormData({ ...formData, location: e.target.value })
                   }
                 />
               </div>
