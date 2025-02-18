@@ -223,13 +223,9 @@ const Index = () => {
                     />
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">
-                  Join 500+ happy students
-                </span>
               </div>
               <p className="text-gray-600 italic">
-                "This masterclass transformed my approach to makeup. The techniques I
-                learned are invaluable!"
+                "This masterclass will transformed your approach to makeup. The techniques you will learn are invaluable!"
               </p>
             </div>
           </motion.div>
