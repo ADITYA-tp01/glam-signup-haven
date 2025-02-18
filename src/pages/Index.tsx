@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const Index = () => {
     pincode: "",
     city: "",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Mumbai cities/areas list
   const mumbaiAreas = [
@@ -44,12 +47,57 @@ const Index = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Successfully registered!",
-      description: "We'll contact you with more details soon.",
-    });
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase
+        .from('Clients')
+        .insert([
+          {
+            Name: formData.name,
+            Email: formData.email,
+            Pincode: formData.pincode,
+            City: formData.city
+          }
+        ])
+        .select();
+
+      if (error) {
+        console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "There was a problem submitting your registration. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Successfully registered!",
+        description: "We'll contact you with more details soon.",
+      });
+
+      // Clear form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        pincode: "",
+        city: "",
+      });
+
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "There was a problem submitting your registration. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const benefits = [
@@ -180,8 +228,12 @@ const Index = () => {
                   </div>
                 )}
               </div>
-              <button type="submit" className="btn-primary w-full">
-                Secure Your Spot Now
+              <button 
+                type="submit" 
+                className="btn-primary w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Secure Your Spot Now"}
               </button>
             </form>
           </motion.div>
