@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
@@ -54,10 +53,13 @@ const Index = () => {
   };
 
   const benefits = [
-    "Professional makeup techniques",
-    "Personal guidance from experts",
-    "Hands-on practice sessions",
-    "Premium beauty kit included",
+    "💄 Learn from a Celebrity Makeup Artist – Get exclusive insights from an international expert",
+    "✨ Master the Latest Makeup Techniques – Glass skin, HD contouring, airbrush, red carpet & bridal looks",
+    "🎥 Live Demonstrations & Hands-On Practice – Watch real-time demos and apply what you learn",
+    "📸 Professional Lighting & Camera Knowledge – Perfect your makeup for photography & social media",
+    "🙋 Personalized Doubt-Solving Sessions – Get direct guidance from the expert",
+    "🛍 Product Examination & Usage – Learn about top international makeup products",
+    "📜 Certification on Completion – Boost your professional credibility"
   ];
 
   return (
@@ -202,12 +204,9 @@ const Index = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
-                    className="flex items-center space-x-3"
+                    className="flex items-start space-x-3 text-sm sm:text-base"
                   >
-                    <span className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center">
-                      ✓
-                    </span>
-                    <span className="text-gray-700">{benefit}</span>
+                    <span className="text-gray-700 leading-relaxed">{benefit}</span>
                   </motion.li>
                 ))}
               </ul>
